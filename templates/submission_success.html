@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Submission Successful</h2>
+  <p>Your submission is under review and will be published if accepted.</p>
+
+  <a href="{% url 'submit_human' %}">Add Another Human</a> |
+  <a href="/">Return to Home</a>
+{% endblock %}

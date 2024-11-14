@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% block style %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    #swipe-container {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .human-profile h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .human-profile p {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .rating-buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .rating-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .rating-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock style %}
+{% block content %}
+<form method="get" action="" class="form-inline my-2 my-lg-0">
+    <div class="form-group">
+        <select name="sort_by" id="sort_by" onchange="this.form.submit()" class="form-control">
+            <option value="">Sort By</option>
+            <option value="ratings_high_to_low" {% if sort_by == 'Excellent' %}selected{% endif %}> Excellent </option>
+            <option value="ratings_low_to_high" {% if sort_by == 'Good' %}selected{% endif %}> Good </option>
+            <option value="followers_high_to_low" {% if sort_by == 'Okay' %}selected{% endif %}> Okay </option>
+            <option value="followers_low_to_high" {% if sort_by == 'Bad' %}selected{% endif %}> Bad </option>
+            <option value="followers_low_to_high" {% if sort_by == 'Pathetic' %}selected{% endif %}> Pathetic </option>
+        </select>
+    </div>
+  </form>
+{% for human in humans %}
+<li><a href="{% url 'submit_human' %}">Add a New Human</a></li>
+<div id="swipe-container">
+    <div class="human-profile" id="profile-{{ human.id }}">
+        <h2><strong>{{ human.name }}</strong></h2>
+        <p><em>{{ human.occupation }}</em></p>
+        <p>{{ human.bio }}</p>
+
+            <button class="btn btn-success" data-rating="excellent" data-human-id="{{ human.id }}">
+                Excellent (<span id="excellent-count-{{ human.id }}">{{ human.rating_count.excellent }}</span>)
+            </button><br><br>
+
+            <button class="btn btn-primary" data-rating="good" data-human-id="{{ human.id }}">
+                Good (<span id="good-count-{{ human.id }}">{{ human.rating_count.good }}</span>)
+            </button><br><br>
+
+            <button class="btn btn" data-rating="okay" data-human-id="{{ human.id }}">
+                Okay (<span id="okay-count-{{ human.id }}">{{ human.rating_count.okay }}</span>)
+            </button><br><br>
+
+            <button class="btn btn-secondary" data-rating="bad" data-human-id="{{ human.id }}">
+                Bad (<span id="bad-count-{{ human.id }}">{{ human.rating_count.bad }}</span>)
+            </button><br><br>
+
+            <button class="btn btn-danger" data-rating="pathetic" data-human-id="{{ human.id }}">
+                Pathetic (<span id="pathetic-count-{{ human.id }}">{{ human.rating_count.pathetic }}</span>)
+            </button>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ratingButtons = document.querySelectorAll('.btn');
+        
+        ratingButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const rating = this.getAttribute('data-rating');
+                const humanId = this.getAttribute('data-human-id');
+
+                fetch("{% url 'submit_review' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: new URLSearchParams({
+                        'rating': rating,
+                        'human_id': humanId,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the review count for each rating category
+                    document.getElementById('excellent-count-' + humanId).textContent = data.excellent_count;
+                    document.getElementById('good-count-' + humanId).textContent = data.good_count;
+                    document.getElementById('okay-count-' + humanId).textContent = data.okay_count;
+                    document.getElementById('bad-count-' + humanId).textContent = data.bad_count;
+                    document.getElementById('pathetic-count-' + humanId).textContent = data.pathetic_count;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}
