@@ -12,5 +12,6 @@ urlpatterns = [
     path('reject_human/<int:human_id>/', views.reject_human, name='reject_human'),
     path('submission_success/', views.submission_success, name='submission_success'),
     path('search', views.search , name='search'),
+    path("login", views.login_view, name="login")
 
 ]

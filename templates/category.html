@@ -50,7 +50,7 @@
 </style>
 {% endblock style %}
 {% block content %}
-<li><a href="{% url 'submit_human' %}">Add a New Human</a></li>
+<li><a class='btn btn-primary' href="{% url 'submit_human' %}">Login to add new persons!!</a></li>
 {% for human in humans %}
 
 <div id="swipe-container">
@@ -60,23 +60,23 @@
         <p>{{ human.bio }}</p>
 
             <button class="btn btn-success" data-rating="excellent" data-human-id="{{ human.id }}">
-                Excellent (<span id="excellent-count-{{ human.id }}">{{ human.rating_count.excellent }}</span>)
+                Polite !(<span id="excellent-count-{{ human.id }}">{{ human.rating_count.excellent }}</span>)
             </button><br><br>
 
             <button class="btn btn-primary" data-rating="good" data-human-id="{{ human.id }}">
-                Good (<span id="good-count-{{ human.id }}">{{ human.rating_count.good }}</span>)
+                No comments ! (<span id="good-count-{{ human.id }}">{{ human.rating_count.good }}</span>)
             </button><br><br>
 
             <button class="btn btn" data-rating="okay" data-human-id="{{ human.id }}">
-                Okay (<span id="okay-count-{{ human.id }}">{{ human.rating_count.okay }}</span>)
+                I don't care ! (<span id="okay-count-{{ human.id }}">{{ human.rating_count.okay }}</span>)
             </button><br><br>
 
             <button class="btn btn-secondary" data-rating="bad" data-human-id="{{ human.id }}">
-                Bad (<span id="bad-count-{{ human.id }}">{{ human.rating_count.bad }}</span>)
+                Hopeless/Rude/Careless ! (<span id="bad-count-{{ human.id }}">{{ human.rating_count.bad }}</span>)
             </button><br><br>
 
             <button class="btn btn-danger" data-rating="pathetic" data-human-id="{{ human.id }}">
-                Pathetic (<span id="pathetic-count-{{ human.id }}">{{ human.rating_count.pathetic }}</span>)
+                 Irritating/Annoying/Useless! (<span id="pathetic-count-{{ human.id }}">{{ human.rating_count.pathetic }}</span>)
             </button>
     </div>
 </div>

@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from .models import Human, RatingCount
+from .models import Human, RatingCount, Category
 from .forms import HumanForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q, Count, Avg
+from django.contrib.auth.forms import AuthenticationForm
 
 def swipe_page(request):
     humans = Human.objects.all()
@@ -49,8 +50,8 @@ def search(request):
     if query:
         humans = Human.objects.filter(
             Q(name__icontains=query) | 
-            Q(bio__icontains=query) | 
-            Q(occupation__icontains=query)
+            Q(bio__icontains=query) |
+            Q(category__name__icontains=query) 
         )
     context = {
         
@@ -122,14 +123,12 @@ def submit_review(request):
 
 
 def category_view(request, category):
-    # Get all humans of the given category
-    humans = Human.objects.filter(occupation=category)
-    # Render the category page with humans of the selected occupation
-    return render(request, 'category.html', {'humans': humans, 'category': category})
+    category=Category.objects.get(name=category)
+    humans = Human.objects.filter(category=category)
+    return render(request, 'category.html', {'humans': humans})
 
 
 
-@login_required
 def submit_human(request):
     if request.method == 'POST':
         form = HumanForm(request.POST)
@@ -166,3 +165,22 @@ def reject_human(request, human_id):
 
 def submission_success(request):
     return render(request, 'submission_success.html')
+
+
+from django.contrib.auth import login as auth_login
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+
+            # Get the next parameter or redirect to 'home'
+            next_url = request.GET.get('next', 'home')
+            return redirect(submit_human)
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'login.html', {'form': form})

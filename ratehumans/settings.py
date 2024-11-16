@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-on9^@-ok*lzidkct)r1(1m_o&+a&x&ok6*uu-^)-j7!z_s82xb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ratethem.pythonanywhere.com']
+ALLOWED_HOSTS = ['ratethem.pythonanywhere.com','*']
 
 
 # Application definition
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',  # Google provider
+    'crispy_forms',
+    'crispy_bootstrap5'
 ]
 
 MIDDLEWARE = [
@@ -55,6 +57,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 ROOT_URLCONF = 'ratehumans.urls'
 import os

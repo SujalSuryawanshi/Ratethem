@@ -2,10 +2,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Submit a New Human</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-  </form>
-{% endblock %}
+{% if user.is_authenticated %}
+<h2>Submit a New Human</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Submit</button>
+</form>
+{% else %}
+<li><a href="{% url 'login' %}" >Login to add human!!</a></li>    
+
+{% endif %}
+{% endblock content %}

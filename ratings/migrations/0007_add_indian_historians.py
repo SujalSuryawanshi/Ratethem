@@ -3,8 +3,10 @@
 from django.db import migrations
 
 def add_indian_historians(apps, schema_editor):
-    Human = apps.get_model('ratings', 'Human')  # Make sure this is your correct app name
-    
+    Human = apps.get_model('ratings', 'Human') 
+    Category = apps.get_model('ratings', 'Category')
+    historian_category, created = Category.objects.get_or_create(name="Historian")
+    singer_cat,created=Category.objects.get_or_create(name="Singer")
     historians = [
         ("Romila Thapar", "Historian", "Eminent historian specializing in ancient Indian history."),
         ("Bipin Chandra", "Historian", "Prominent historian known for his works on modern Indian history."),
@@ -127,18 +129,18 @@ def add_indian_historians(apps, schema_editor):
     ]
     
     # Add Indian Singers to the database
-    for name, occupation, bio in indian_singers:
-        Human.objects.create(name=name, occupation=occupation, bio=bio)
+    for name, category, bio in indian_singers:
+        Human.objects.create(name=name, category=singer_cat, bio=bio)
     
     # Add International Singers to the database
-    for name, occupation, bio in international_singers:
-        Human.objects.create(name=name, occupation=occupation, bio=bio)
+    for name, category, bio in international_singers:
+        Human.objects.create(name=name, category=singer_cat, bio=bio)
     # Insert historians into the database
-    for name, occupation, bio in historians:
+    for name, category, bio in historians:
         Human.objects.create(
             name=name,
             bio=bio,
-            occupation=occupation,
+            category=historian_category,
         )
 
 class Migration(migrations.Migration):

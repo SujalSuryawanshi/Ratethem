@@ -50,21 +50,17 @@
 </style>
 {% endblock style %}
 {% block content %}
-<form method="get" action="" class="form-inline my-2 my-lg-0">
-    <div class="form-group">
-        <select name="sort_by" id="sort_by" onchange="this.form.submit()" class="form-control">
-            <option value="">Sort By</option>
-            <option value="ratings_high_to_low" {% if sort_by == 'Excellent' %}selected{% endif %}> Excellent </option>
-            <option value="ratings_low_to_high" {% if sort_by == 'Good' %}selected{% endif %}> Good </option>
-            <option value="followers_high_to_low" {% if sort_by == 'Okay' %}selected{% endif %}> Okay </option>
-            <option value="followers_low_to_high" {% if sort_by == 'Bad' %}selected{% endif %}> Bad </option>
-            <option value="followers_low_to_high" {% if sort_by == 'Pathetic' %}selected{% endif %}> Pathetic </option>
-        </select>
-    </div>
-  </form>
+
+  <div class="search-field">
+    <form role="search" method=GET action="{% url 'search' %}">
+        {% csrf_token %}
+        <input type="text" id="search-form" placeholder="Find Them !!" value="" name="query">
+        <button type="submit" class="btn btn-primary">Look</button>
+    </form>
+</div>
 {% for human in humans %}
-<li><a href="{% url 'submit_human' %}">Add a New Human</a></li>
-<div id="swipe-container">
+<li><a class='btn btn-primary' href="{% url 'submit_human' %}">Login to add new persons!!</a></li>
+    <div id="swipe-container">
     <div class="human-profile" id="profile-{{ human.id }}">
         <h2><strong>{{ human.name }}</strong></h2>
         <p><em>{{ human.occupation }}</em></p>
